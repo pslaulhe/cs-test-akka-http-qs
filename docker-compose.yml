@@ -1,0 +1,17 @@
+version: '3.7'
+services:
+  postgres:
+    image: postgres:10.5
+    container_name: srp-postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    logging:
+      options:
+        max-size: 10m
+        max-file: "3"
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
