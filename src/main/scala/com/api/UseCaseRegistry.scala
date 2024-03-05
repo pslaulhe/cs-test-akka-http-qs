@@ -7,14 +7,14 @@ import Providers._
 import akka.actor.typed.ActorRef
 import akka.actor.typed.Behavior
 import akka.actor.typed.scaladsl.Behaviors
+import com.api.Request.ConfirmCheckoutRequest
 
-import scala.collection.immutable
 import useCases.confirmCheckout
 
 object UseCaseRegistry {
   // actor protocol
   sealed trait Command
-  final case class ConfirmCheckout(replyTo: ActorRef[ActionPerformed]) extends Command
+  final case class ConfirmCheckout(replyTo: ActorRef[ActionPerformed], request: ConfirmCheckoutRequest) extends Command
 
   final case class ActionPerformed(description: String)
 
@@ -30,9 +30,10 @@ object UseCaseRegistry {
 
   private def registry(): Behavior[Command] =
     Behaviors.receiveMessage {
-      case ConfirmCheckout(replyTo) =>
+      case ConfirmCheckout(replyTo, request) =>
         val checkoutUseCase = confirmCheckout(stockProvider, pricingProvider, orderRepository, paymentProvider, invoiceProvider, shippingProvider)
-          // replyTo ! checkoutUseCase.execute()
+        checkoutUseCase.execute(request.customerId, request.customerEmailAddress, request.shippingAddress, request.creditCardInfo, request.productQuantities)
+        replyTo ! ActionPerformed("checkout created")
         Behaviors.same
     }
 }

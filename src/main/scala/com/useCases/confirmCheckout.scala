@@ -24,6 +24,7 @@ case class confirmCheckout(
   }
 
   private def getTotalPrice(productQuantities: Array[(Int, Int)]) = {
+    println(s"getting price for ${productQuantities.map{ tuple => s"product id ${tuple._1} - qty ${tuple._2}"}.mkString(" | ")} products")
     productQuantities.foldLeft(0.0)((priceAccumulator, productQuantity) => {
       val productStock = stockProvider.getStock(productQuantity._1)
       if (productStock < productQuantity._2) {

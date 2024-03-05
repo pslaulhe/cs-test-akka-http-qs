@@ -2,8 +2,8 @@ package com.api
 
 import Model.{Address, CreditCardInfo}
 import UseCaseRegistry.ActionPerformed
-import spray.json.{JsArray, JsNumber, JsString, JsValue, deserializationError}
-
+import com.api.Request.ConfirmCheckoutRequest
+import spray.json.{JsString, JsValue}
 import java.time.LocalDate
 
 //#json-formats
@@ -25,17 +25,6 @@ object JsonFormats {
   implicit val creditCardInfoJsonFormat: RootJsonFormat[CreditCardInfo] = jsonFormat4(CreditCardInfo.apply)
   implicit val actionPerformedJsonFormat: RootJsonFormat[ActionPerformed]  = jsonFormat1(ActionPerformed.apply)
 
-  implicit val arrayTupleFormat: RootJsonFormat[Array[(Int, Int)]] = new RootJsonFormat[Array[(Int, Int)]] {
-    def write(obj: Array[(Int, Int)]): JsValue = JsArray(obj.map { case (a, b) => JsArray(JsNumber(a), JsNumber(b)) }: _*)
-
-    def read(json: JsValue): Array[(Int, Int)] = json match {
-      case JsArray(elements) =>
-        elements.map {
-          case JsArray(Vector(JsNumber(a), JsNumber(b))) => (a.intValue, b.intValue)
-          case _ => deserializationError("Array[(Int, Int)] expected")
-        }.toArray
-      case _ => deserializationError("Array[(Int, Int)] expected")
-    }
-  }
+  implicit val confirmCheckoutJsonFormat: RootJsonFormat[ConfirmCheckoutRequest] = jsonFormat5(ConfirmCheckoutRequest.apply)
 }
 //#json-formats
