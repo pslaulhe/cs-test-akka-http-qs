@@ -12,5 +12,17 @@ class SqlProviderSpec extends AnyWordSpec with Matchers {
         connection.prepareStatement("SELECT 1").executeQuery()
       }) should be(())
     }
+
+    "get query" in {
+      val sqlProvider = SqlProvider()
+      val result = sqlProvider.get(connection => {
+        connection.prepareStatement("SELECT 1").executeQuery()
+      })(rs => {
+        rs.getInt(1)
+      })
+      result.hasNext should be(true)
+      result.next() should be(1)
+      result.hasNext should be(false)
+    }
   }
 }
