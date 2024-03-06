@@ -1,13 +1,13 @@
 CREATE TABLE IF NOT EXISTS orders
 (
-    id   SERIAL PRIMARY KEY,
-    customerId Int UNIQUE NOT NULL,
-    shippingAddressId Int UNIQUE
+    id UUID PRIMARY KEY,
+    customerId Int NOT NULL,
+    shippingAddressId Int NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS productQuantity
 (
-    orderId INT NOT NULL,
+    orderId UUID NOT NULL,
     productId INT NOT NULL,
     quantity INT NOT NULL,
     CONSTRAINT fk_order_id

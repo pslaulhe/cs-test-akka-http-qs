@@ -2,13 +2,11 @@ package com.api
 
 //#user-registry-actor
 
-import Database.OrderRepositoryImpl
+import Database.SQL.SqlOrderRepository
 import Providers._
-import akka.actor.typed.ActorRef
-import akka.actor.typed.Behavior
+import akka.actor.typed.{ActorRef, Behavior}
 import akka.actor.typed.scaladsl.Behaviors
 import com.api.Request.ConfirmCheckoutRequest
-
 import useCases.confirmCheckout
 
 object UseCaseRegistry {
@@ -26,7 +24,7 @@ object UseCaseRegistry {
   private val shippingProvider = ShippingProviderImpl()
   private val paymentProvider = PaymentProviderImpl()
 
-  private val orderRepository = OrderRepositoryImpl()
+  private val orderRepository = SqlOrderRepository()
 
   private def registry(): Behavior[Command] =
     Behaviors.receiveMessage {

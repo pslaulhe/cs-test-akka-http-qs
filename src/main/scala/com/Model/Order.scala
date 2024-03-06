@@ -1,3 +1,5 @@
 package Model
 
-case class Order(customerId: Int, productQuantities: Array[(Int, Int)], shippingAddressId: Int)
+import java.util.UUID
+
+case class Order(orderUid: UUID, customerId:  Int, productQuantities: Array[(Int, Int)], shippingAddressId: Int)

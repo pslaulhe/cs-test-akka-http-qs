@@ -24,6 +24,23 @@ case class SqlProvider(){
     }
   }
 
+  def get[T](command: Connection => ResultSet)(f: ResultSet => T): Iterator[T] = {
+    val conn: Connection = this.getNewConnection
+    Try(command(conn)) match {
+      case Failure(ex) =>
+        closeConnection(conn)
+        throw ex
+      case Success(rs) => results(rs)(f)
+    }
+  }
+
+  private def results[T](resultSet: ResultSet)(f: ResultSet => T): Iterator[T] = {
+    new Iterator[T] {
+      def hasNext: Boolean = resultSet.next()
+      def next(): T = f(resultSet)
+    }
+  }
+
   private def getNewConnection: Connection = {
     DriverManager.getConnection(connectionName, dbName, dbPassword)
   }
