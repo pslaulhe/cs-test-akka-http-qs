@@ -5,6 +5,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 class SqlProviderSpec extends AnyWordSpec with Matchers {
+  // TODO: These tests should be refactored to use a mock database
   "SqlProvider" should {
     "execute a command" in {
       val sqlProvider = SqlProvider()

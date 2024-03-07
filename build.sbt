@@ -21,13 +21,16 @@ lazy val root = (project in file(".")).
       "com.typesafe.akka" %% "akka-http-spray-json"     % akkaHttpVersion,
       "com.typesafe.akka" %% "akka-actor-typed"         % akkaVersion,
       "com.typesafe.akka" %% "akka-stream"              % akkaVersion,
-      "ch.qos.logback"    % "logback-classic"           % "1.2.11",
+      "ch.qos.logback"    % "logback-classic"           % "1.5.2",
 
       "org.postgresql" % "postgresql" % "42.7.1",
 
       "com.typesafe.akka" %% "akka-http-testkit"        % akkaHttpVersion % Test,
       "com.typesafe.akka" %% "akka-actor-testkit-typed" % akkaVersion     % Test,
-      "org.scalatest"     %% "scalatest"                % "3.2.12"        % Test,
+      "org.scalatest"     %% "scalatest"                % "3.2.17"        % Test,
+      "org.scalatestplus" %% "mockito-5-10"             % "3.2.18.0" % Test,
+      "org.assertj"       % "assertj-core"             % "3.25.2" % Test
+
       // mockito for test doubles, jassert for fluent assertions?
     )
   )
