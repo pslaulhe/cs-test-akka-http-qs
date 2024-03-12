@@ -1,5 +1,7 @@
 package com.example
 
+import Database.SQL.SqlOrderRepository
+import Providers._
 import akka.actor.typed.ActorSystem
 import akka.actor.typed.scaladsl.Behaviors
 import akka.http.scaladsl.Http
@@ -33,13 +35,24 @@ object QuickstartApp {
       val userRegistryActor = context.spawn(UseCaseRegistry(), "UserRegistryActor")
       context.watch(userRegistryActor)
 
-      val routes = new UseCaseRoutes(userRegistryActor)(context.system)
+      val confirmCheckoutUseCase = buildConfirmCheckoutInstance();
+      val routes = new UseCaseRoutes(userRegistryActor, confirmCheckoutUseCase)(context.system)
       startHttpServer(routes.allRoutes)(context.system)
 
       Behaviors.empty
     }
     val system = ActorSystem[Nothing](rootBehavior, "HelloAkkaHttpServer")
     //#server-bootstrapping
+  }
+
+  private def buildConfirmCheckoutInstance(): useCases.ConfirmCheckoutUseCase = {
+    val invoiceProvider = InvoiceProviderImpl()
+    val stockProvider = StockProviderImpl()
+    val pricingProvider = PricingProviderImpl()
+    val shippingProvider = ShippingProviderImpl()
+    val paymentProvider = PaymentProviderImpl()
+    val orderRepository = SqlOrderRepository()
+    useCases.ConfirmCheckoutUseCase(stockProvider, pricingProvider, orderRepository, paymentProvider, invoiceProvider, shippingProvider)
   }
 }
 //#main-class

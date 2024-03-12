@@ -4,7 +4,9 @@ import Database.OrderRepository
 import Model._
 import Providers._
 
-case class confirmCheckout(
+import scala.concurrent.Future
+
+case class ConfirmCheckoutUseCase(
       stockProvider: StockProvider,
       pricingProvider: PricingProvider,
       orderRepository: OrderRepository,
@@ -12,7 +14,7 @@ case class confirmCheckout(
       invoiceProvider: InvoiceProvider,
       shippingProvider: ShippingProvider)
 {
-  def execute(customerId:Int, customerEmailAddress:String, shippingAddress: Address, creditCardInfo: CreditCardInfo, productQuantities: Array[(Int, Int)]): Unit = {
+  def execute(customerId:Int, customerEmailAddress:String, shippingAddress: Address, creditCardInfo: CreditCardInfo, productQuantities: Array[(Int, Int)]): Future[Unit] = {
     val order = Order(java.util.UUID.randomUUID, customerId, productQuantities, shippingAddress.id)
 
     val totalPrice: Double = getTotalPrice(productQuantities)
@@ -21,6 +23,8 @@ case class confirmCheckout(
     paymentProvider.charge(creditCardInfo, totalPrice)
     invoiceProvider.sendInvoice(order, customerEmailAddress)
     shippingProvider.ship(order)
+
+    Future()(scala.concurrent.ExecutionContext.global)
   }
 
   private def getTotalPrice(productQuantities: Array[(Int, Int)]) = {

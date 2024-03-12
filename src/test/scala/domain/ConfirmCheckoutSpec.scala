@@ -3,15 +3,14 @@ package domain
 import Database.SQL.SqlOrderRepository
 import Model.{Address, CreditCardInfo, Order}
 import Providers._
-import org.mockito.{ArgumentCaptor, Mock}
-import org.mockito.Mockito.{atMostOnce, mock, never, times, verify, when}
+import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import useCases.confirmCheckout
+import useCases.ConfirmCheckoutUseCase
 
-import java.time.LocalDate
-import org.assertj.core.api.Assertions.assertThat
-import org.mockito.ArgumentMatchers.any;
+import java.time.LocalDate;
 
 class ConfirmCheckoutSpec extends AnyWordSpec with Matchers {
   "ConfirmCheckout" should {
@@ -22,7 +21,7 @@ class ConfirmCheckoutSpec extends AnyWordSpec with Matchers {
     val invoiceProvider: InvoiceProvider = mock(classOf[InvoiceProviderImpl])
     val shippingProvider: ShippingProvider = mock(classOf[ShippingProviderImpl])
 
-    val confirmCheckoutUseCase = confirmCheckout(stockProvider, pricingProvider, orderRepository, paymentProvider, invoiceProvider, shippingProvider)
+    val confirmCheckoutUseCase = ConfirmCheckoutUseCase(stockProvider, pricingProvider, orderRepository, paymentProvider, invoiceProvider, shippingProvider)
 
     "test execute happy path" in {
       val address = Address(1, "country", "", "", 12)

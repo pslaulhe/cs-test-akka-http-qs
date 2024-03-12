@@ -3,9 +3,10 @@ package com.example
 //#user-routes-spec
 //#test-top
 import akka.actor.testkit.typed.scaladsl.ActorTestKit
-import akka.actor.typed.ActorSystem
+import akka.actor.typed.{ActorRef, ActorSystem}
 import akka.http.scaladsl.marshalling.Marshal
 import akka.http.scaladsl.model._
+import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
@@ -17,7 +18,7 @@ class UserRoutesSpec extends AnyWordSpec with Matchers with ScalaFutures with Sc
 
   // the Akka HTTP route testkit does not yet support a typed actor system (https://github.com/akka/akka-http/issues/2036)
   // so we have to adapt for now
-  lazy val testKit = ActorTestKit()
+  lazy val testKit: ActorTestKit = ActorTestKit()
   implicit def typedSystem: ActorSystem[_] = testKit.system
   override def createActorSystem(): akka.actor.ActorSystem =
     testKit.system.classicSystem
@@ -26,8 +27,8 @@ class UserRoutesSpec extends AnyWordSpec with Matchers with ScalaFutures with Sc
   // We use the real UserRegistryActor to test it while we hit the Routes,
   // but we could "mock" it by implementing it in-place or by using a TestProbe
   // created with testKit.createTestProbe()
-  val userRegistry = testKit.spawn(UserRegistry())
-  lazy val routes = new UserRoutes(userRegistry).userRoutes
+  val userRegistry: ActorRef[UserRegistry.Command] = testKit.spawn(UserRegistry())
+  lazy val routes: Route = new UserRoutes(userRegistry).userRoutes
 
   // use the json formats to marshal and unmarshall objects in the test
   import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
