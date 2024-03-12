@@ -26,13 +26,14 @@ class ConfirmCheckoutSpec extends AnyWordSpec with Matchers {
     "test execute happy path" in {
       val address = Address(1, "country", "", "", 12)
       val creditCardInfo = CreditCardInfo("testNumber", LocalDate.now(), "123", "cardHolderName")
-      val orderToBeCreated = Order(java.util.UUID.randomUUID, 1, Array((1, 1)), 1)
+      val orderUuid = java.util.UUID.randomUUID
+      val orderToBeCreated = Order(orderUuid, 1, Array((1, 1)), 1)
 
       when(stockProvider.getStock(1)).thenReturn(10)
       when(pricingProvider.getPrice(1)).thenReturn(50.0)
 
       val productQuantities = Array((1, 1))
-      confirmCheckoutUseCase.execute(1, "testEmail", address, creditCardInfo, productQuantities)
+      confirmCheckoutUseCase.execute(orderUuid, 1, "testEmail", address, creditCardInfo, productQuantities)
 
       // Assert
       verify(stockProvider).getStock(1)

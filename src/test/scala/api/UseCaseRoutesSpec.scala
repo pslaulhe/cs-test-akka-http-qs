@@ -1,9 +1,7 @@
 package api
 
-import akka.actor.Actor
-import akka.actor.testkit.typed.scaladsl.{ActorTestKit, TestProbe}
-import akka.actor.typed.scaladsl.AskPattern.Askable
-import akka.actor.typed.{ActorRef, ActorSystem, Props}
+import akka.actor.testkit.typed.scaladsl.ActorTestKit
+import akka.actor.typed.{ActorRef, ActorSystem}
 import akka.http.scaladsl.marshalling.Marshal
 import akka.http.scaladsl.model.{MessageEntity, StatusCodes}
 import akka.http.scaladsl.server.Route
@@ -11,16 +9,13 @@ import akka.http.scaladsl.testkit.ScalatestRouteTest
 import com.api.JsonFormats.confirmCheckoutJsonFormat
 import com.api.Request.ConfirmCheckoutRequest
 import com.api.{UseCaseRegistry, UseCaseRoutes}
-import com.example.JsonFormats
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{mock, times, verify, when}
+import org.mockito.Mockito.{mock, times, verify}
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import spray.json.JsonParser
 import useCases.ConfirmCheckoutUseCase
-
-import scala.concurrent.Future
 
 class UseCaseRoutesSpec extends AnyWordSpec with Matchers with ScalatestRouteTest {
 
@@ -31,7 +26,6 @@ class UseCaseRoutesSpec extends AnyWordSpec with Matchers with ScalatestRouteTes
     testKit.system.classicSystem
 
   import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
-  import JsonFormats._
 
   // Here we need to implement all the abstract members of UserRoutes.
   // We use the real UserRegistryActor to test it while we hit the Routes,
@@ -47,18 +41,13 @@ class UseCaseRoutesSpec extends AnyWordSpec with Matchers with ScalatestRouteTes
   "UseCaseRoutes" should {
     "be able to confirm checkout (POST /confirmCheckout)" in {
       val body = Marshal(confirmCheckoutRequest).to[MessageEntity].futureValue
-
-      // Stub/mock the behavior of confirmCheckoutUseCase.execute to return a successful future
-      when(confirmCheckoutUseCase.execute(any(), any(), any(), any(), any()))
-        .thenReturn(Future.successful(())) // Assuming execute method returns a Future[Unit]
-
       val request = Post(uri = "/confirmCheckout").withEntity(body)
       request ~> routes ~> check {
-        verify(confirmCheckoutUseCase, times(1)).execute(any(), any(), any(), any(), any())
+        verify(confirmCheckoutUseCase, times(1)).execute(any(), any(), any(), any(), any(), any())
         status should ===(StatusCodes.Created)
 
         // and we know what message we're expecting back:
-        entityAs[String] should ===("""{"description":"checkout created"}""")
+        entityAs[String] should include("""{"description":"checkout created""")
       }
     }
   }

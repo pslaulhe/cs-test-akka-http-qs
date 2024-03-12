@@ -19,8 +19,9 @@ object UseCaseRegistry {
   private def registry(): Behavior[Command] =
     Behaviors.receiveMessage {
       case ConfirmCheckout(confirmCheckoutUseCase, replyTo, request) =>
-        confirmCheckoutUseCase.execute(request.customerId, request.customerEmailAddress, request.shippingAddress, request.creditCardInfo, request.productQuantities)
-        replyTo ! ActionPerformed("checkout created")
+        val newUuid = java.util.UUID.randomUUID
+        confirmCheckoutUseCase.execute(newUuid, request.customerId, request.customerEmailAddress, request.shippingAddress, request.creditCardInfo, request.productQuantities)
+        replyTo ! ActionPerformed("checkout created for order " + newUuid)
         Behaviors.same
     }
 }
