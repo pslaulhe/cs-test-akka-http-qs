@@ -21,6 +21,7 @@ lazy val root = (project in file(".")).
       "com.typesafe.akka" %% "akka-http-spray-json"     % akkaHttpVersion,
       "com.typesafe.akka" %% "akka-actor-typed"         % akkaVersion,
       "com.typesafe.akka" %% "akka-stream"              % akkaVersion,
+      "ch.megard" %% "akka-http-cors" % "1.2.0",
       "ch.qos.logback"    % "logback-classic"           % "1.5.2",
 
       "org.postgresql" % "postgresql" % "42.7.1",

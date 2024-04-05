@@ -6,6 +6,7 @@ import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.util.Timeout
+import ch.megard.akka.http.cors.scaladsl.CorsDirectives.cors
 import com.api.Request.ConfirmCheckoutRequest
 import com.api.UseCaseRegistry.{ActionPerformed, ConfirmCheckout}
 import useCases.ConfirmCheckoutUseCase
@@ -31,7 +32,7 @@ class UseCaseRoutes(useCaseRegistry: ActorRef[UseCaseRegistry.Command], confirmC
   //#all-routes
   //#users-get-post
   //#users-get-delete
-  private val confirmCheckoutRoutes: Route =
+  private val confirmCheckoutRoutes: Route = cors() {
     path("confirmCheckout") {
       post {
         entity(as[ConfirmCheckoutRequest]){ confirmCheckoutRequest =>
@@ -41,6 +42,7 @@ class UseCaseRoutes(useCaseRegistry: ActorRef[UseCaseRegistry.Command], confirmC
         }
       }
     }
+  }
 
   val allRoutes: Route = confirmCheckoutRoutes
   //#all-routes
