@@ -1,30 +1,15 @@
-# Sample Akka HTTP server
+# Confirm checkout use case
+- Scala Application that implements a checkout process faking several providers
+- Based on akka http quickstart template  (check src/scala/com/examples to see the template files)
+- Dockerized database: run docker compose up to set it up
 
-This is a sample Akka HTTP endpoint keeping an in-memory database of users that can be created and listed.
+## How to run
+- Run the application with `sbt run`
 
-Sources in the sample:
+## How to app unit and integration tests
+- Run the tests in the src/test/scala folder
 
-* `QuickstartApp.scala` -- contains the main method which bootstraps the application
-* `UserRoutes.scala` -- Akka HTTP `routes` defining exposed endpoints
-* `UserRegistry.scala` -- the actor which handles the registration requests
-* `JsonFormats.scala` -- converts the JSON data from requests into Scala types and from Scala types into JSON responses
-
-## Interacting with the sample
-
-After starting the sample with `sbt run` the following requests can be made:
-
-List all users:
-
-    curl http://localhost:8080/users
-
-Create a user:
-
-    curl -XPOST http://localhost:8080/users -d '{"name": "Liselott", "age": 32, "countryOfResidence": "Norway"}' -H "Content-Type:application/json"
-
-Get the details of one user:
-
-    curl http://localhost:8080/users/Liselott
-
-Delete a user:
-
-    curl -XDELETE http://localhost:8080/users/Liselott
+## How to run e2e test
+- Run this application
+- Clone this repository https://github.com/pslaulhe/cs-e2e-test-vue
+- Follow the E2E tests instructions in the README.md file
